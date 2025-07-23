@@ -25,7 +25,7 @@ function onReady() {
     const shadow = wrapper.attachShadow({ mode: 'open' });
     forwardEventsFromShadow(shadow);
     const rootDiv = document.createElement('div');
-    wrapper.style.pointerEvents = 'auto';
+    wrapper.style.pointerEvents = 'none';
     rootDiv.style.pointerEvents = 'auto';
     rootDiv.id = 'widget-root';
 
