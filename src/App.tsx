@@ -2,11 +2,14 @@ import './App.css';
 import './widget/styles/style.css';
 
 import { WidgetContainer } from './widget/components/widget-container.tsx';
+import { HeroUIProvider } from '@heroui/react';
 
 function App() {
   return (
     <>
-      <WidgetContainer clientKey={'test-key'} />
+      <HeroUIProvider>
+        <WidgetContainer clientKey={'widget'} />
+      </HeroUIProvider>
     </>
   );
 }
