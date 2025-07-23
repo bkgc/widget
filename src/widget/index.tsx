@@ -4,10 +4,14 @@ import './styles/style.css';
 
 function initializeWidget() {
   if (document.readyState !== 'loading') {
-    onReady();
+    waitAndRender();
   } else {
-    document.addEventListener('DOMContentLoaded', onReady);
+    document.addEventListener('DOMContentLoaded', waitAndRender);
   }
+}
+
+function waitAndRender() {
+  setTimeout(onReady, 0); // nos aseguramos que se ejecute cuando todo haya cargado
 }
 
 function onReady() {
@@ -16,20 +20,13 @@ function onReady() {
 
     const wrapper = document.createElement('div');
     wrapper.id = 'my-widget-wrapper';
-    wrapper.style.position = 'fixed';
-    wrapper.style.top = '0';
-    wrapper.style.left = '0';
-    wrapper.style.width = '100vw';
-    wrapper.style.height = '100vh';
-    wrapper.style.zIndex = '9999999999'; // bien arriba
-    // wrapper.style.pointerEvents = 'none'; // para que el wrapper no bloquee eventos
     const shadow = wrapper.attachShadow({ mode: 'open' });
     const rootDiv = document.createElement('div');
-    // rootDiv.style.pointerEvents = 'auto';
     rootDiv.id = 'widget-root';
 
     shadow.appendChild(rootDiv);
     injectStyle(shadow);
+    setupEventDelegation(shadow);
 
     const clientKey = getClientKey();
     const apiUrl = getApiUrl()
@@ -41,6 +38,27 @@ function onReady() {
     console.warn('Widget initialization failed:', error);
   }
 }
+function setupEventDelegation(shadowRoot: ShadowRoot) {
+  const mouseEvents = ['click', 'mousedown', 'mouseup'];
+  const keyboardEvents = ['keydown', 'keyup'];
+
+  mouseEvents.forEach(eventName => {
+    shadowRoot.addEventListener(eventName, (e: Event) => {
+      const me = e as MouseEvent;
+      const newEvent = new MouseEvent(me.type, me);
+      document.dispatchEvent(newEvent);
+    });
+  });
+
+  keyboardEvents.forEach(eventName => {
+    shadowRoot.addEventListener(eventName, (e: Event) => {
+      const ke = e as KeyboardEvent;
+      const newEvent = new KeyboardEvent(ke.type, ke);
+      document.dispatchEvent(newEvent);
+    });
+  });
+}
+
 
 function injectStyle(shadowRoot: ShadowRoot) {
   const scripts = document.getElementsByTagName('script');
