@@ -25,6 +25,8 @@ function onReady() {
     const shadow = wrapper.attachShadow({ mode: 'open' });
     forwardEventsFromShadow(shadow);
     const rootDiv = document.createElement('div');
+    wrapper.style.pointerEvents = 'auto';
+    rootDiv.style.pointerEvents = 'auto';
     rootDiv.id = 'widget-root';
 
     shadow.appendChild(rootDiv);
@@ -44,49 +46,58 @@ function onReady() {
 function forwardEventsFromShadow(shadowRoot: ShadowRoot) {
   const eventTypes = ['click', 'mousedown', 'mouseup', 'keydown', 'keyup'];
 
-  eventTypes.forEach(eventName => {
-    shadowRoot.addEventListener(eventName, (e: Event) => {
+  eventTypes.forEach(eventType => {
+    shadowRoot.addEventListener(eventType, (originalEvent) => {
+      // Ignorar si ya fue reenviado
+      if ((originalEvent as any)._isForwarded) return;
+
+      const eventInit = {
+        bubbles: true,
+        cancelable: originalEvent.cancelable,
+        composed: true,
+      };
+
       let newEvent: Event;
-      if (e instanceof MouseEvent) {
-        const me = e as MouseEvent;
-        newEvent = new MouseEvent(me.type, {
-          bubbles: true,
-          cancelable: true,
-          composed: true,
-          clientX: me.clientX,
-          clientY: me.clientY,
-          screenX: me.screenX,
-          screenY: me.screenY,
-          button: me.button,
-          buttons: me.buttons,
-          ctrlKey: me.ctrlKey,
-          shiftKey: me.shiftKey,
-          altKey: me.altKey,
-          metaKey: me.metaKey,
+
+      if (originalEvent instanceof MouseEvent) {
+        newEvent = new MouseEvent(originalEvent.type, {
+          ...eventInit,
+          screenX: originalEvent.screenX,
+          screenY: originalEvent.screenY,
+          clientX: originalEvent.clientX,
+          clientY: originalEvent.clientY,
+          button: originalEvent.button,
+          buttons: originalEvent.buttons,
+          relatedTarget: originalEvent.relatedTarget,
+          ctrlKey: originalEvent.ctrlKey,
+          shiftKey: originalEvent.shiftKey,
+          altKey: originalEvent.altKey,
+          metaKey: originalEvent.metaKey,
         });
-      } else if (e instanceof KeyboardEvent) {
-        const ke = e as KeyboardEvent;
-        newEvent = new KeyboardEvent(ke.type, {
-          bubbles: true,
-          cancelable: true,
-          composed: true,
-          key: ke.key,
-          code: ke.code,
-          location: ke.location,
-          repeat: ke.repeat,
-          ctrlKey: ke.ctrlKey,
-          shiftKey: ke.shiftKey,
-          altKey: ke.altKey,
-          metaKey: ke.metaKey,
+      } else if (originalEvent instanceof KeyboardEvent) {
+        newEvent = new KeyboardEvent(originalEvent.type, {
+          ...eventInit,
+          key: originalEvent.key,
+          code: originalEvent.code,
+          location: originalEvent.location,
+          ctrlKey: originalEvent.ctrlKey,
+          shiftKey: originalEvent.shiftKey,
+          altKey: originalEvent.altKey,
+          metaKey: originalEvent.metaKey,
+          repeat: originalEvent.repeat,
         });
       } else {
-        newEvent = new Event(e.type, e);
+        newEvent = new Event(originalEvent.type, eventInit);
       }
 
-      document.dispatchEvent(newEvent);
+      // Marca como reenviado para evitar loops
+      (newEvent as any)._isForwarded = true;
+
+      originalEvent.target?.dispatchEvent(newEvent);
     });
   });
 }
+
 
 function injectStyle(shadowRoot: ShadowRoot) {
   const scripts = document.getElementsByTagName('script');
