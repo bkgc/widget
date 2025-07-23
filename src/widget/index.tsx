@@ -4,14 +4,10 @@ import './styles/style.css';
 
 function initializeWidget() {
   if (document.readyState !== 'loading') {
-    waitAndRender();
+    onReady();
   } else {
-    document.addEventListener('DOMContentLoaded', waitAndRender);
+    document.addEventListener('DOMContentLoaded', onReady);
   }
-}
-
-function waitAndRender() {
-  setTimeout(onReady, 0); // nos aseguramos que se ejecute cuando todo haya cargado
 }
 
 function onReady() {
@@ -20,13 +16,19 @@ function onReady() {
 
     const wrapper = document.createElement('div');
     wrapper.id = 'my-widget-wrapper';
+    wrapper.style.position = 'fixed';
+    wrapper.style.bottom = '0';
+    wrapper.style.right = '0';
+    wrapper.style.width = '100vw';
+    wrapper.style.height = '100vh';
+    wrapper.style.zIndex = '9999999999';
     const shadow = wrapper.attachShadow({ mode: 'open' });
+    forwardEventsFromShadow(shadow);
     const rootDiv = document.createElement('div');
     rootDiv.id = 'widget-root';
 
     shadow.appendChild(rootDiv);
     injectStyle(shadow);
-    setupEventDelegation(shadow);
 
     const clientKey = getClientKey();
     const apiUrl = getApiUrl()
@@ -38,27 +40,53 @@ function onReady() {
     console.warn('Widget initialization failed:', error);
   }
 }
-function setupEventDelegation(shadowRoot: ShadowRoot) {
-  const mouseEvents = ['click', 'mousedown', 'mouseup'];
-  const keyboardEvents = ['keydown', 'keyup'];
 
-  mouseEvents.forEach(eventName => {
-    shadowRoot.addEventListener(eventName, (e: Event) => {
-      const me = e as MouseEvent;
-      const newEvent = new MouseEvent(me.type, me);
-      document.dispatchEvent(newEvent);
-    });
-  });
+function forwardEventsFromShadow(shadowRoot: ShadowRoot) {
+  const eventTypes = ['click', 'mousedown', 'mouseup', 'keydown', 'keyup'];
 
-  keyboardEvents.forEach(eventName => {
+  eventTypes.forEach(eventName => {
     shadowRoot.addEventListener(eventName, (e: Event) => {
-      const ke = e as KeyboardEvent;
-      const newEvent = new KeyboardEvent(ke.type, ke);
+      let newEvent: Event;
+      if (e instanceof MouseEvent) {
+        const me = e as MouseEvent;
+        newEvent = new MouseEvent(me.type, {
+          bubbles: true,
+          cancelable: true,
+          composed: true,
+          clientX: me.clientX,
+          clientY: me.clientY,
+          screenX: me.screenX,
+          screenY: me.screenY,
+          button: me.button,
+          buttons: me.buttons,
+          ctrlKey: me.ctrlKey,
+          shiftKey: me.shiftKey,
+          altKey: me.altKey,
+          metaKey: me.metaKey,
+        });
+      } else if (e instanceof KeyboardEvent) {
+        const ke = e as KeyboardEvent;
+        newEvent = new KeyboardEvent(ke.type, {
+          bubbles: true,
+          cancelable: true,
+          composed: true,
+          key: ke.key,
+          code: ke.code,
+          location: ke.location,
+          repeat: ke.repeat,
+          ctrlKey: ke.ctrlKey,
+          shiftKey: ke.shiftKey,
+          altKey: ke.altKey,
+          metaKey: ke.metaKey,
+        });
+      } else {
+        newEvent = new Event(e.type, e);
+      }
+
       document.dispatchEvent(newEvent);
     });
   });
 }
-
 
 function injectStyle(shadowRoot: ShadowRoot) {
   const scripts = document.getElementsByTagName('script');
