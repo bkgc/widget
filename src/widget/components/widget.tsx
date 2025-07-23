@@ -291,7 +291,7 @@ export function Widget() {
       className="w-screen h-screen flex flex-col gap-4 absolute   z-[9999] "
       ref={containerRef}>
       <Draggable onStop={onStop} onDrag={onDrag} nodeRef={nodeRef}>
-        <Button
+        <button
           ref={combinedRef}
           className={` p-2 text-white absolute  rounded-full`}
           style={{
@@ -310,10 +310,10 @@ export function Widget() {
               openWidget()
             }
           }}
-          isIconOnly
+        // isIconOnly
         >
           <Message01Icon className="h-full w-full" strokeWidth={2} />
-        </Button>
+        </button>
       </Draggable>
 
       <AnimatePresence>
