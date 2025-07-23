@@ -25,7 +25,8 @@ function onReady() {
     injectStyle(shadow);
 
     const clientKey = getClientKey();
-    const component = <WidgetContainer clientKey={clientKey} />;
+    const apiUrl = getApiUrl()
+    const component = <WidgetContainer clientKey={clientKey} apiUrl={apiUrl} />;
     createRoot(rootDiv).render(component);
 
     document.body.appendChild(wrapper);
@@ -53,6 +54,17 @@ function getClientKey() {
 
   console.log("clientKey", clientKey)
   return clientKey;
+}
+export function getApiUrl() {
+  const scripts = document.getElementsByTagName('script');
+  const current = scripts[scripts.length - 1];
+  const apiUrl = current?.getAttribute('data-api-url');
+
+  if (!apiUrl) {
+    throw new Error('Missing data-api-url');
+  }
+
+  return apiUrl;
 }
 
 initializeWidget();

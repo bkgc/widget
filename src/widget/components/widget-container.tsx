@@ -4,6 +4,7 @@ import { Widget } from './widget';
 
 interface WidgetContainerProps {
   clientKey: string;
+  apiUrl: string;
 }
 
 export function WidgetContainer({ clientKey }: WidgetContainerProps) {

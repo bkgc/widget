@@ -1,7 +1,8 @@
 import axios from "axios";
+import { getApiUrl } from "../widget";
 
 const telefono = "+56992168066";
-const baseURL = import.meta.env.VITE_VM_AI_URL;
+const baseURL = getApiUrl();
 
 const api = axios.create({
   baseURL,
