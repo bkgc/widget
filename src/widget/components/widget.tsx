@@ -288,7 +288,7 @@ export function Widget() {
   }
   return (
     <div
-      className="w-screen h-screen flex flex-col gap-4 relative  bg-stone-50"
+      className="w-screen h-screen flex flex-col gap-4 relative  bg-stone-50 z-[9999]"
       ref={containerRef}>
       <Draggable onStop={onStop} onDrag={onDrag} nodeRef={nodeRef}>
         <Button

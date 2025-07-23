@@ -16,9 +16,16 @@ function onReady() {
 
     const wrapper = document.createElement('div');
     wrapper.id = 'my-widget-wrapper';
-
+    wrapper.style.position = 'fixed';
+    wrapper.style.top = '0';
+    wrapper.style.left = '0';
+    wrapper.style.width = '100vw';
+    wrapper.style.height = '100vh';
+    wrapper.style.zIndex = '9999999999'; // bien arriba
+    wrapper.style.pointerEvents = 'none'; // para que el wrapper no bloquee eventos
     const shadow = wrapper.attachShadow({ mode: 'open' });
     const rootDiv = document.createElement('div');
+    rootDiv.style.pointerEvents = 'auto';
     rootDiv.id = 'widget-root';
 
     shadow.appendChild(rootDiv);
@@ -36,10 +43,14 @@ function onReady() {
 }
 
 function injectStyle(shadowRoot: ShadowRoot) {
+  const scripts = document.getElementsByTagName('script');
+  const current = scripts[scripts.length - 1];
+  const fileName = process.env.WIDGET_NAME || 'widget';
+  const cssUrl = current?.getAttribute('data-widget-css-url') || process.env.WIDGET_CSS_URL || `/${fileName}.css`;
+
   const link = document.createElement('link');
   link.rel = 'stylesheet';
-  const fileName = process.env.WIDGET_NAME || 'widget';
-  link.href = process.env.WIDGET_CSS_URL || `/${fileName}.css`;
+  link.href = cssUrl;
   shadowRoot.appendChild(link);
 }
 
@@ -58,7 +69,7 @@ function getClientKey() {
 export function getApiUrl() {
   const scripts = document.getElementsByTagName('script');
   const current = scripts[scripts.length - 1];
-  const apiUrl = current?.getAttribute('data-api-url');
+  const apiUrl = current?.getAttribute('data-api-url') || 'http://localhost:8000';
 
   if (!apiUrl) {
     throw new Error('Missing data-api-url');
