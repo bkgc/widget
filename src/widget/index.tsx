@@ -22,10 +22,10 @@ function onReady() {
     wrapper.style.width = '100vw';
     wrapper.style.height = '100vh';
     wrapper.style.zIndex = '9999999999'; // bien arriba
-    wrapper.style.pointerEvents = 'none'; // para que el wrapper no bloquee eventos
+    // wrapper.style.pointerEvents = 'none'; // para que el wrapper no bloquee eventos
     const shadow = wrapper.attachShadow({ mode: 'open' });
     const rootDiv = document.createElement('div');
-    rootDiv.style.pointerEvents = 'auto';
+    // rootDiv.style.pointerEvents = 'auto';
     rootDiv.id = 'widget-root';
 
     shadow.appendChild(rootDiv);
