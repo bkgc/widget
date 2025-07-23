@@ -1,4 +1,4 @@
-export function formatChileanPhoneNumber(input) {
+export function formatChileanPhoneNumber(input: string) {
     const numeroLimpio = input.replace(/[^0-9kK]/g, "");
 
     const numerosTelefono = numeroLimpio.slice(3);
@@ -20,7 +20,7 @@ export function formatChileanPhoneNumber(input) {
     return `+56 9 ${numerosTelefono}`;
 }
 
-export const formatDateToYYYYMMDD = (dateString) => {
+export const formatDateToYYYYMMDD = (dateString: string) => {
     const date = new Date(dateString);
 
     const hora = String(date.getHours()).padStart(2, "0");
@@ -32,7 +32,7 @@ export const formatDateToYYYYMMDD = (dateString) => {
     return `${year}-${month}-${day} ${hora}:${minutos}`;
 };
 
-export const formatNumberToCurrency = (num) => {
+export const formatNumberToCurrency = (num: any) => {
     if (!num) return "$ 0";
 
     if (typeof num === "string") {
@@ -46,53 +46,53 @@ export const formatNumberToCurrency = (num) => {
         throw new TypeError("Input must be a number or a numeric string");
     }
 
-    let [integer] = num.toFixed(0).split(".");
+    const [integer] = num.toFixed(0).split(".");
 
-    let reversed = integer.split("").reverse().join("");
+    const reversed = integer.split("").reverse().join("");
 
-    let withDots = reversed.match(/.{1,3}/g).join(".");
+    const withDots = reversed.match(/.{1,3}/g).join(".");
 
-    let formatted = withDots.split("").reverse().join("");
+    const formatted = withDots.split("").reverse().join("");
 
     return "$ " + formatted;
 };
 
-export const formatCurrencyToNumber = (currency) => {
+export const formatCurrencyToNumber = (currency: any) => {
     if (typeof currency !== "string") {
         throw new TypeError("Input must be a string");
     }
 
-    let numberString = currency.replace(/[$,.]/g, "");
-    let number = parseInt(numberString, 10);
+    const numberString = currency.replace(/[$,.]/g, "");
+    const number = parseInt(numberString, 10);
 
     return number;
 };
 
-export const inputFormatNumberToCurrency = (num) => {
+export const inputFormatNumberToCurrency = (num: any) => {
     const cleanNumber = num.replace(/[^0-9]/g, "");
 
     if (cleanNumber.length < 1) return cleanNumber;
 
-    let [integer] = cleanNumber.split(".");
+    const [integer] = cleanNumber.split(".");
 
-    let reversed = integer.split("").reverse().join("");
+    const reversed = integer.split("").reverse().join("");
 
-    let withDots = reversed.match(/.{1,3}/g).join(".");
+    const withDots = reversed.match(/.{1,3}/g).join(".");
 
-    let formatted = withDots.split("").reverse().join("");
+    const formatted = withDots.split("").reverse().join("");
 
     return `$ ${formatted}`;
 };
 
-export const formatRut = (rut) => {
+export const formatRut = (rut: any) => {
     const rutLimpio = rut.replace(/[^0-9kK]/g, "");
     const cuerpo = rutLimpio.slice(0, -1);
     const dv = rutLimpio.slice(-1).toUpperCase();
     if (rutLimpio.length < 2) return rutLimpio;
 
     if (rutLimpio.length >= 9) {
-        let cuerpo = rutLimpio.substring(0, 8);
-        let dv = rutLimpio.charAt(8);
+        const cuerpo = rutLimpio.substring(0, 8);
+        const dv = rutLimpio.charAt(8);
 
         let cuerpoFormatoMiles = cuerpo
             .toString()
@@ -124,7 +124,7 @@ export const formatRut = (rut) => {
     return `${cuerpoFormatoMiles}-${dv}`;
 };
 
-export const validateRut = (rut) => {
+export const validateRut = (rut: any) => {
     const rutLimpio = rut.replace(/[^0-9kK]/g, "");
     if (rutLimpio.length < 2) return false;
     const cuerpo = rutLimpio.slice(0, -1);
@@ -150,7 +150,7 @@ export const validateRut = (rut) => {
     return isValidRut;
 };
 
-export const validateRutMerchant = (rut) => {
+export const validateRutMerchant = (rut: any) => {
     const rutLimpio = rut.replace(/[^0-9kK]/g, "");
     if (rutLimpio.length < 2) return false;
     const cuerpo = rutLimpio.slice(0, -1);
@@ -176,7 +176,7 @@ export const validateRutMerchant = (rut) => {
     return isValidRut;
 };
 
-export const formatDateToDDMMYY = (dateString) => {
+export const formatDateToDDMMYY = (dateString: any) => {
     const date = new Date(dateString);
 
     const day = String(date.getDate()).padStart(2, "0");
@@ -186,7 +186,7 @@ export const formatDateToDDMMYY = (dateString) => {
     return `${day}-${month}-${year}`;
 };
 
-export const formatDateToHHMMDDMMYY = (dateString) => {
+export const formatDateToHHMMDDMMYY = (dateString: any) => {
     const date = new Date(dateString);
 
     const hora = String(date.getHours()).padStart(2, "0");
@@ -198,7 +198,7 @@ export const formatDateToHHMMDDMMYY = (dateString) => {
     return `${hora}:${minutos} ${day}-${month}-${year}`;
 };
 
-export const validateEmail = (email) => {
+export const validateEmail = (email: any) => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i;
     return emailRegex.test(email);
 }

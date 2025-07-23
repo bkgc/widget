@@ -109,8 +109,8 @@ export function Widget() {
   const [sizeFont, setSizeFont] = useState(1)
 
   const isDraggingRef = useRef(false);
-  const buttonModalRef = useRef(null)
-  const containerRef = useRef(null)
+  const buttonModalRef = useRef<HTMLButtonElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const nodeRef = useRef(null);
   const chatsRef = useRef<HTMLDivElement>(null)
 
@@ -140,6 +140,8 @@ export function Widget() {
     setCurrentPage(((page + newDirection) > 2 || (page + newDirection) < 0) ? 0 : page + newDirection)
   };
   const openWidget = () => {
+    if (!buttonModalRef.current || !containerRef.current) return;
+
     const rect = buttonModalRef.current.getBoundingClientRect();
     const containerRect = containerRef.current.getBoundingClientRect();
 
