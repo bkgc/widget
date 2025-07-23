@@ -26,14 +26,10 @@ const args = parseArgs({
 });
 
 const env = args.values.environment;
-const production = env === 'production';
-let environmentVariablesPath = [ './.env.development' ];
+let environmentVariablesPath = ['./.env'];
 
 console.log(`Building widget for ${env} environment...`);
 
-if (production) {
-  environmentVariablesPath = './.env.production';
-}
 
 const ENV_VARIABLES = config({
   path: environmentVariablesPath,
