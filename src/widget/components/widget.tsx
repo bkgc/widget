@@ -301,7 +301,7 @@ export function Widget() {
             bottom: '4rem',
             right: '4rem'
           }}
-          onPress={() => {
+          onClick={() => {
             console.log("CLICK")
             if (isOpen) {
               setIsOpen(false)
