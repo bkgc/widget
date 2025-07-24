@@ -140,35 +140,41 @@ export function Widget() {
     setCurrentPage(((page + newDirection) > 2 || (page + newDirection) < 0) ? 0 : page + newDirection)
   };
   const openWidget = () => {
-    if (!buttonModalRef.current || !containerRef.current) return;
+    if (!buttonModalRef.current) return;
 
     const rect = buttonModalRef.current.getBoundingClientRect();
-    const containerRect = containerRef.current.getBoundingClientRect();
 
     const widgetWidth = 480;
     const widgetHeight = 720;
     const padding = 10;
-    let left = rect.left - containerRect.left;
-    let top = rect.top - containerRect.top;
-    const containerWidth = containerRect.width;
-    const containerHeight = containerRect.height;
 
-    if (left + widgetWidth > containerWidth) {
-      left = rect.right - widgetWidth - containerRect.left;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    // Posición inicial del widget basado en la posición del botón
+    let left = rect.left;
+    let top = rect.top;
+
+    // Si se sale del lado derecho
+    if (left + widgetWidth > viewportWidth) {
+      left = rect.right - widgetWidth;
     }
 
-    if (top + widgetHeight > containerHeight) {
-      top = rect.bottom - widgetHeight - containerRect.top - 75;
-    }
-    else {
-      top += 75
+    // Si se sale por abajo
+    if (top + widgetHeight > viewportHeight) {
+      top = rect.bottom - widgetHeight - 75; // Ajuste extra
+    } else {
+      top += 75; // Le sumás espacio debajo del botón
     }
 
+    // Asegurar que no se vaya fuera de la pantalla por izquierda o arriba
     if (left < padding) left = padding;
     if (top < padding) top = padding;
 
+    // Guardar la posición final
     setWidgetPosition({ top, left });
   };
+
 
   const onDrag = () => {
     isDraggingRef.current = true;

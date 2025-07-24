@@ -33,7 +33,6 @@ function onReady() {
     // ✅ Estilos para que sea clickeable
     rootDiv.style.width = '100%';
     rootDiv.style.height = '100%';
-    rootDiv.style.pointerEvents = 'auto'; // permite clics dentro del widget
 
     shadowRoot.appendChild(rootDiv);
     document.body.appendChild(wrapper);
