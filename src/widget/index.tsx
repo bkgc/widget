@@ -30,6 +30,7 @@ function onReady() {
     rootDiv.style.position = 'relative'
     rootDiv.style.width = '100%'
     rootDiv.style.height = '100%'
+    rootDiv.style.pointerEvents = 'auto';
 
     wrapper.appendChild(rootDiv);
     document.body.appendChild(wrapper);
