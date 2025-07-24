@@ -19,19 +19,22 @@ function onReady() {
     const wrapper = document.createElement('div');
     wrapper.id = 'my-widget-wrapper';
 
-    // ✅ Estilos necesarios
+    // ✅ Estilos necesarios para el contenedor principal
     wrapper.style.position = 'fixed';
     wrapper.style.inset = '0';
     wrapper.style.zIndex = '999999';
+    wrapper.style.pointerEvents = 'none'; // Allow clicking through by default
+    wrapper.style.width = '0';
+    wrapper.style.height = '0';
+    wrapper.style.overflow = 'visible';
 
     const shadowRoot = wrapper.attachShadow({ mode: 'open' });
 
     const rootDiv = document.createElement('div');
     rootDiv.id = 'widget-root';
-
-    // ✅ Estilos para que sea clickeable
-    rootDiv.style.width = '100%';
-    rootDiv.style.height = '100%';
+    rootDiv.style.position = 'relative';
+    rootDiv.style.width = '0';
+    rootDiv.style.height = '0';
 
     shadowRoot.appendChild(rootDiv);
     document.body.appendChild(wrapper);

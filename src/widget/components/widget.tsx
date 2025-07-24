@@ -328,7 +328,7 @@ export function Widget() {
             style={{
               top: widgetPosition.top,
               left: widgetPosition.left,
-              pointerEvents: isDraggingRef.current ? 'auto' : 'none'
+              pointerEvents: 'auto'
             }}
           >
             <div
