@@ -22,18 +22,20 @@ function onReady() {
     wrapper.style.width = '100vw';
     wrapper.style.height = '100vh';
     wrapper.style.zIndex = '9999999999';
+    wrapper.style.pointerEvents = 'none'; // no bloquear nada fuera del widget
+
     const shadow = wrapper.attachShadow({ mode: 'open' });
     forwardEventsFromShadow(shadow);
+
     const rootDiv = document.createElement('div');
-    wrapper.style.pointerEvents = 'none';
-    rootDiv.style.pointerEvents = 'auto';
     rootDiv.id = 'widget-root';
+    rootDiv.style.pointerEvents = 'auto'; // permitir eventos dentro del widget 👈
 
     shadow.appendChild(rootDiv);
     injectStyle(shadow);
 
     const clientKey = getClientKey();
-    const apiUrl = getApiUrl()
+    const apiUrl = getApiUrl();
     const component = <WidgetContainer clientKey={clientKey} apiUrl={apiUrl} />;
     createRoot(rootDiv).render(component);
 
@@ -48,7 +50,6 @@ function forwardEventsFromShadow(shadowRoot: ShadowRoot) {
 
   eventTypes.forEach(eventType => {
     shadowRoot.addEventListener(eventType, (originalEvent) => {
-      // Ignorar si ya fue reenviado
       if ((originalEvent as any)._isForwarded) return;
 
       const eventInit = {
@@ -90,14 +91,11 @@ function forwardEventsFromShadow(shadowRoot: ShadowRoot) {
         newEvent = new Event(originalEvent.type, eventInit);
       }
 
-      // Marca como reenviado para evitar loops
       (newEvent as any)._isForwarded = true;
-
       originalEvent.target?.dispatchEvent(newEvent);
     });
   });
 }
-
 
 function injectStyle(shadowRoot: ShadowRoot) {
   const scripts = document.getElementsByTagName('script');
@@ -120,9 +118,10 @@ function getClientKey() {
     throw new Error('Missing data-client-key attribute');
   }
 
-  console.log("clientKey", clientKey)
+  console.log("clientKey", clientKey);
   return clientKey;
 }
+
 export function getApiUrl() {
   const scripts = document.getElementsByTagName('script');
   const current = scripts[scripts.length - 1];

@@ -288,7 +288,7 @@ export function Widget() {
   }
   return (
     <div
-      className="w-screen h-screen flex flex-col gap-4 absolute   z-[9999] "
+      className="w-screen h-screen flex flex-col gap-4 absolute z-[9999] "
       ref={containerRef}>
       <Draggable onStop={onStop} onDrag={onDrag} nodeRef={nodeRef}>
         <Button
@@ -301,7 +301,7 @@ export function Widget() {
             bottom: '4rem',
             right: '4rem'
           }}
-          onClick={() => {
+          onPress={() => {
             console.log("CLICK")
             if (isOpen) {
               setIsOpen(false)
