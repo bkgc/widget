@@ -14,26 +14,21 @@ function initializeWidget() {
 function onReady() {
   try {
     if (document.getElementById('my-widget-wrapper')) return;
+
     console.log("Creando wrapper...");
+
     const wrapper = document.createElement('div');
     wrapper.id = 'my-widget-wrapper';
-    // wrapper.style.position = 'relative';
-    // wrapper.style.width = '100vw'
-    // wrapper.style.height = '100vh'
-    // wrapper.style.pointerEvents = 'none'
+
+    const shadowRoot = wrapper.attachShadow({ mode: 'open' });
 
     const rootDiv = document.createElement('div');
-    // rootDiv.id = 'widget-root';
-    // rootDiv.style.position = 'absolute'
-    // rootDiv.style.inset = '0px'
-    // rootDiv.style.zIndex = '9999999'
-    // rootDiv.style.pointerEvents = 'auto'
+    rootDiv.id = 'widget-root';
 
-
-    wrapper.appendChild(rootDiv);
+    shadowRoot.appendChild(rootDiv);
     document.body.appendChild(wrapper);
 
-    injectStyle();
+    injectStyle(shadowRoot);
 
     const clientKey = getClientKey();
     const apiUrl = getApiUrl();
@@ -50,21 +45,27 @@ function onReady() {
   }
 }
 
-function injectStyle() {
-  const scripts = document.getElementsByTagName('script');
-  const current = scripts[scripts.length - 1];
-  const cssUrl = current?.getAttribute('data-widget-css-url') || process.env.WIDGET_CSS_URL || `widget.css`;
+function injectStyle(shadowRoot: ShadowRoot) {
+  const fileName = process.env.WIDGET_NAME || 'widget';
+  const cssUrl =
+    getCurrentScript()?.getAttribute('data-widget-css-url') ||
+    process.env.WIDGET_CSS_URL ||
+    `/${fileName}.css`;
 
   const link = document.createElement('link');
   link.rel = 'stylesheet';
-  link.href = cssUrl;
-  document.head.appendChild(link); // 🔥 importante, ya no hay shadowRoot
+  link.href = cssUrl!;
+  shadowRoot.appendChild(link);
+}
+
+function getCurrentScript(): HTMLScriptElement | null {
+  const scripts = document.getElementsByTagName('script');
+  return scripts.length ? scripts[scripts.length - 1] : null;
 }
 
 function getClientKey() {
-  const scripts = document.getElementsByTagName('script');
-  const current = scripts[scripts.length - 1];
-  const clientKey = current?.getAttribute('data-client-key') || "68751f5c68840ae1341e7d49";
+  const clientKey =
+    getCurrentScript()?.getAttribute('data-client-key') || '68751f5c68840ae1341e7d49';
 
   if (!clientKey) throw new Error('Missing data-client-key attribute');
 
@@ -72,9 +73,8 @@ function getClientKey() {
 }
 
 export function getApiUrl() {
-  const scripts = document.getElementsByTagName('script');
-  const current = scripts[scripts.length - 1];
-  const apiUrl = current?.getAttribute('data-api-url') || 'http://localhost:8000';
+  const apiUrl =
+    getCurrentScript()?.getAttribute('data-api-url') || 'http://localhost:8000';
 
   if (!apiUrl) throw new Error('Missing data-api-url');
 

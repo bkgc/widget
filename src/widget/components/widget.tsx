@@ -290,13 +290,11 @@ export function Widget() {
       <Draggable onStop={onStop} onDrag={onDrag} nodeRef={nodeRef}>
         <Button
           ref={combinedRef}
-          className={` p-2 text-white fixed  rounded-full`}
+          className={` p-2 text-white fixed bottom-6 right-6  rounded-full`}
           style={{
             width: widget.buttonSize + "rem",
             height: widget.buttonSize + "rem",
             backgroundColor: widget.colorHeader,
-            bottom: '4rem',
-            right: '4rem'
           }}
           onPress={() => {
             console.log("CLICK")
