@@ -22,7 +22,6 @@ function onReady() {
     wrapper.style.inset = '0'
     wrapper.style.width = '100vw'
     wrapper.style.height = '100vh'
-    wrapper.style.pointerEvents = 'none';
     wrapper.style.zIndex = '9999'
 
     const rootDiv = document.createElement('div');
@@ -30,7 +29,6 @@ function onReady() {
     rootDiv.style.position = 'relative'
     rootDiv.style.width = '100%'
     rootDiv.style.height = '100%'
-    rootDiv.style.pointerEvents = 'auto';
 
     wrapper.appendChild(rootDiv);
     document.body.appendChild(wrapper);
