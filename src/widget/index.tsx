@@ -20,10 +20,21 @@ function onReady() {
     const wrapper = document.createElement('div');
     wrapper.id = 'my-widget-wrapper';
 
+    // ✅ Estilos necesarios
+    wrapper.style.position = 'fixed';
+    wrapper.style.inset = '0';
+    wrapper.style.zIndex = '999999';
+    wrapper.style.pointerEvents = 'none'; // permite hacer clic en la página
+
     const shadowRoot = wrapper.attachShadow({ mode: 'open' });
 
     const rootDiv = document.createElement('div');
     rootDiv.id = 'widget-root';
+
+    // ✅ Estilos para que sea clickeable
+    rootDiv.style.width = '100%';
+    rootDiv.style.height = '100%';
+    rootDiv.style.pointerEvents = 'auto'; // permite clics dentro del widget
 
     shadowRoot.appendChild(rootDiv);
     document.body.appendChild(wrapper);
