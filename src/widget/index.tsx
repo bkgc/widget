@@ -1,7 +1,7 @@
 import { createRoot } from 'react-dom/client';
 import { WidgetContainer } from './components/widget-container';
 import { HeroUIProvider } from '@heroui/react';
-
+import './styles/style.css';
 function initializeWidget() {
   if (document.readyState !== 'loading') {
     onReady();
