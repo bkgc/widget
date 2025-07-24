@@ -29,7 +29,6 @@ function onReady() {
     // Root div donde montamos el widget React
     const rootDiv = document.createElement('div');
     rootDiv.id = 'widget-root';
-    rootDiv.style.pointerEvents = 'auto'; // habilita clicks dentro
 
     wrapper.appendChild(rootDiv);
     document.body.appendChild(wrapper);
