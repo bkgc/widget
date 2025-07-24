@@ -13,28 +13,26 @@ function initializeWidget() {
 
 function onReady() {
   try {
-    // Si ya existe, no volver a montarlo
     if (document.getElementById('my-widget-wrapper')) return;
     console.log("Creando wrapper...");
     const wrapper = document.createElement('div');
     wrapper.id = 'my-widget-wrapper';
 
-    // 👉 Estilos del wrapper
-    wrapper.style.position = 'fixed';
+    wrapper.style.position = 'absolute';
+    wrapper.style.inset = '0'
     wrapper.style.width = '100vw'
     wrapper.style.height = '100vh'
-    wrapper.style.zIndex = '9999';
-    wrapper.style.pointerEvents = 'none'; // habilita clicks
+    wrapper.style.pointerEvents = 'none';
 
-    // Root div donde montamos el widget React
     const rootDiv = document.createElement('div');
     rootDiv.id = 'widget-root';
-    rootDiv.style.pointerEvents = 'auto'; // habilita clicks dentro
+    rootDiv.style.position = 'fixed'
+    rootDiv.style.width = '100%'
+    rootDiv.style.height = '100%'
 
     wrapper.appendChild(rootDiv);
     document.body.appendChild(wrapper);
 
-    // Estilos si los quieres agregar dinámicamente
     injectStyle();
 
     const clientKey = getClientKey();

@@ -288,7 +288,7 @@ export function Widget() {
   }
   return (
     <div
-      className="w-screen h-screen flex flex-col gap-4 absolute z-[9999] pointer-events-none"
+      className="w-full h-full flex flex-col gap-4 absolute "
       ref={containerRef}>
       <Draggable onStop={onStop} onDrag={onDrag} nodeRef={nodeRef}>
         <Button
