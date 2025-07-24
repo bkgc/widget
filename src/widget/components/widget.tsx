@@ -1,6 +1,6 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import { WidgetContext } from '../lib/context';
-import { Button, Card, CardBody, CardHeader, Divider, Image } from '@heroui/react';
+import { Card, CardBody, CardHeader, Divider, Image } from '@heroui/react';
 import { ArrowLeft01Icon, ArrowRight01Icon, Cancel01Icon, Message01Icon, SentIcon, ChipIcon, ReloadIcon } from "hugeicons-react";
 import { getFiles, sendMessageToAI } from '../../api/api';
 import { AnimatePresence, motion, wrap } from 'framer-motion';
@@ -337,12 +337,12 @@ export function Widget() {
                 <div className='text-white text-lg font-bold'>{widget.widgetName}</div>
                 <div className='text-white text-tiny'>Disponible ahora</div>
               </div>
-              <Button onPress={() => startRestartChat(true)} className='text-white bg-transparent hover:text-opacity-50' isIconOnly>
+              <button onClick={() => startRestartChat(true)} className='text-white bg-transparent hover:text-opacity-50' >
                 <ReloadIcon className='stroke-2' />
-              </Button>
-              <Button onPress={() => setIsOpen(false)} className='text-white bg-transparent hover:text-opacity-50' isIconOnly>
+              </button>
+              <button onClick={() => setIsOpen(false)} className='text-white bg-transparent hover:text-opacity-50' >
                 <Cancel01Icon className='stroke-2' />
-              </Button>
+              </button>
               <div
                 className='absolute right-10 -bottom-4 flex flex-row gap-2 z-50'>
                 <button
@@ -408,24 +408,20 @@ export function Widget() {
                       <div
                         className="w-full flex flex-col gap-1 border-1 rounded-2xl overflow-hidden ">
                         {widget.buttons.map((button, index) =>
-                          <Button key={index}
+                          <button key={index}
                             className={`w-full flex justify-between bg-stone-100 min-h-10 text-black hover:bg-black hover:text-white ${index > 0 && "border-t"} rounded-none transition-all duration-300 ease-in-out`}
-                            startContent={
-                              <>
-                                {IconsToSelect.find((b) => b.key === widget.mainIcon) ?
-                                  IconsToSelect.find((b) => b.key === widget.mainIcon)?.icon :
-                                  <Image
-                                    src={button?.icon}
-                                    className="w-4" />}
-                              </>
-                            }
                             style={{ fontSize: sizeFont + "rem" }}
-                            onPress={() => addButtonAction(button.instruction)}>
+                            onClick={() => addButtonAction(button.instruction)}>
+                            {IconsToSelect.find((b) => b.key === widget.mainIcon) ?
+                              IconsToSelect.find((b) => b.key === widget.mainIcon)?.icon :
+                              <Image
+                                src={button?.icon}
+                                className="w-4" />}
                             <div
                               className="w-full  text-left">
                               {button.name.substring(0, 30)}
                             </div>
-                          </Button>
+                          </button>
                         )}
                       </div>
                     </div>}
@@ -472,38 +468,38 @@ export function Widget() {
                             </div>
                             <div
                               className="w-full flex justify-center">
-                              <Button
+                              <button
                                 className="w-full rounded-full text-white font-bold hover:opacity-50"
                                 style={{ backgroundColor: widget.colorHeader }}>
                                 Ver producto
-                              </Button>
+                              </button>
                             </div>
                             <div
                               className="w-full flex justify-center">
-                              <Button
+                              <button
                                 className="rounded-full bg-transparent hover:bg-gray-400">
                                 Ver detalle
-                              </Button>
+                              </button>
                             </div>
                           </CardBody>
                         </Card>
                       </motion.div>
                       <div
                         className='flex flex-row justify-between w-full absolute top-1/2 z-50'>
-                        <Button
+                        <button
                           className='flex justify-center min-h-10 min-w-10 rounded-full text-white opacity-75 hover:opacity-50'
                           style={{ backgroundColor: widget.colorHeader }}
-                          isIconOnly
-                          onPress={() => paginate(-1)}>
+
+                          onClick={() => paginate(-1)}>
                           <ArrowLeft01Icon />
-                        </Button>
-                        <Button
+                        </button>
+                        <button
                           className='flex justify-center min-h-10 min-w-10 rounded-full text-white opacity-75 hover:opacity-50'
                           style={{ backgroundColor: widget.colorHeader }}
-                          isIconOnly
-                          onPress={() => paginate(1)}>
+
+                          onClick={() => paginate(1)}>
                           <ArrowRight01Icon />
-                        </Button>
+                        </button>
                       </div>
                       <div
                         className='w-full flex justify-center'>
@@ -588,11 +584,8 @@ export function Widget() {
                       }
                     }}
                     value={message} />
-                  <Button
-                    isIconOnly
-                    variant="light"
-                    size="md"
-                    onPress={() => {
+                  <button
+                    onClick={() => {
                       addChat(message)
                       setMessage('')
                     }}
@@ -600,7 +593,7 @@ export function Widget() {
                     style={{ backgroundColor: widget.colorHeader }}
                   >
                     <SentIcon />
-                  </Button>
+                  </button>
                 </div>
               </>}
 
