@@ -13,37 +13,46 @@ function initializeWidget() {
 
 function onReady() {
   try {
+    // Si ya existe, no volver a montarlo
     if (document.getElementById('my-widget-wrapper')) return;
 
-    // Wrapper ocupa solo el espacio del botón
     const wrapper = document.createElement('div');
     wrapper.id = 'my-widget-wrapper';
+
+    // 👉 Estilos del wrapper
     wrapper.style.position = 'fixed';
     wrapper.style.bottom = '2rem';
     wrapper.style.right = '2rem';
     wrapper.style.zIndex = '9999999999';
+    wrapper.style.pointerEvents = 'auto'; // habilita clicks
 
-    const shadow = wrapper.attachShadow({ mode: 'open' });
-
+    // Root div donde montamos el widget React
     const rootDiv = document.createElement('div');
     rootDiv.id = 'widget-root';
-    rootDiv.style.pointerEvents = 'auto';
+    rootDiv.style.pointerEvents = 'auto'; // habilita clicks dentro
 
-    shadow.appendChild(rootDiv);
-    injectStyle(shadow);
+    wrapper.appendChild(rootDiv);
+    document.body.appendChild(wrapper);
+
+    // Estilos si los quieres agregar dinámicamente
+    injectStyle();
 
     const clientKey = getClientKey();
     const apiUrl = getApiUrl();
-    const component = <HeroUIProvider><WidgetContainer clientKey={clientKey} apiUrl={apiUrl} /></HeroUIProvider>;
-    createRoot(rootDiv).render(component);
 
-    document.body.appendChild(wrapper);
+    const component = (
+      <HeroUIProvider>
+        <WidgetContainer clientKey={clientKey} apiUrl={apiUrl} />
+      </HeroUIProvider>
+    );
+
+    createRoot(rootDiv).render(component);
   } catch (error) {
     console.warn('Widget initialization failed:', error);
   }
 }
 
-function injectStyle(shadowRoot: ShadowRoot) {
+function injectStyle() {
   const scripts = document.getElementsByTagName('script');
   const current = scripts[scripts.length - 1];
   const cssUrl = current?.getAttribute('data-widget-css-url') || process.env.WIDGET_CSS_URL || `widget.css`;
@@ -51,7 +60,7 @@ function injectStyle(shadowRoot: ShadowRoot) {
   const link = document.createElement('link');
   link.rel = 'stylesheet';
   link.href = cssUrl;
-  shadowRoot.appendChild(link);
+  document.head.appendChild(link); // 🔥 importante, ya no hay shadowRoot
 }
 
 function getClientKey() {
@@ -59,11 +68,8 @@ function getClientKey() {
   const current = scripts[scripts.length - 1];
   const clientKey = current?.getAttribute('data-client-key') || "68751f5c68840ae1341e7d49";
 
-  if (!clientKey) {
-    throw new Error('Missing data-client-key attribute');
-  }
+  if (!clientKey) throw new Error('Missing data-client-key attribute');
 
-  console.log("clientKey", clientKey);
   return clientKey;
 }
 
@@ -72,9 +78,7 @@ export function getApiUrl() {
   const current = scripts[scripts.length - 1];
   const apiUrl = current?.getAttribute('data-api-url') || 'http://localhost:8000';
 
-  if (!apiUrl) {
-    throw new Error('Missing data-api-url');
-  }
+  if (!apiUrl) throw new Error('Missing data-api-url');
 
   return apiUrl;
 }
