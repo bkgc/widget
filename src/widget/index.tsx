@@ -17,17 +17,17 @@ function onReady() {
     console.log("Creando wrapper...");
     const wrapper = document.createElement('div');
     wrapper.id = 'my-widget-wrapper';
-    wrapper.style.position = 'relative';
-    wrapper.style.width = '100vw'
-    wrapper.style.height = '100vh'
-    wrapper.style.pointerEvents = 'none'
+    // wrapper.style.position = 'relative';
+    // wrapper.style.width = '100vw'
+    // wrapper.style.height = '100vh'
+    // wrapper.style.pointerEvents = 'none'
 
     const rootDiv = document.createElement('div');
-    rootDiv.id = 'widget-root';
-    rootDiv.style.position = 'absolute'
-    rootDiv.style.inset = '0px'
-    rootDiv.style.zIndex = '9999999'
-    rootDiv.style.pointerEvents = 'auto'
+    // rootDiv.id = 'widget-root';
+    // rootDiv.style.position = 'absolute'
+    // rootDiv.style.inset = '0px'
+    // rootDiv.style.zIndex = '9999999'
+    // rootDiv.style.pointerEvents = 'auto'
 
 
     wrapper.appendChild(rootDiv);

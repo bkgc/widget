@@ -168,7 +168,6 @@ export function Widget() {
     if (top < padding) top = padding;
 
     setWidgetPosition({ top, left });
-    setIsOpen(true);
   };
 
   const onDrag = () => {
@@ -287,13 +286,11 @@ export function Widget() {
     }
   }
   return (
-    <div
-      className="w-full h-full flex flex-col gap-4 absolute left-0 top-0 "
-      ref={containerRef}>
+    <>
       <Draggable onStop={onStop} onDrag={onDrag} nodeRef={nodeRef}>
         <Button
           ref={combinedRef}
-          className={` p-2 text-white absolute  rounded-full`}
+          className={` p-2 text-white fixed  rounded-full`}
           style={{
             width: widget.buttonSize + "rem",
             height: widget.buttonSize + "rem",
@@ -303,12 +300,9 @@ export function Widget() {
           }}
           onPress={() => {
             console.log("CLICK")
-            if (isOpen) {
-              setIsOpen(false)
-            }
-            else {
-              openWidget()
-            }
+            openWidget()
+            setIsOpen(!isOpen)
+            // setIsOpen(!isOpen)
           }}
           isIconOnly
         >
@@ -324,7 +318,7 @@ export function Widget() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 50 }}
             transition={{ duration: 0.3 }}
-            className={`absolute w-[30rem] h-[45rem] bg-white border border-gray-200 shadow-lg z-[9999] rounded-xl flex flex-col overflow-hidden`}
+            className={`fixed w-[30rem] h-[45rem] bg-white border border-gray-200 shadow-lg z-[9999] rounded-xl flex flex-col overflow-hidden`}
             style={{
               top: widgetPosition.top,
               left: widgetPosition.left
@@ -616,6 +610,6 @@ export function Widget() {
           </motion.div>
         )}
       </AnimatePresence>
-    </div >
+    </ >
   );
 }

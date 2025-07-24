@@ -6,10 +6,8 @@ import { Button, HeroUIProvider } from '@heroui/react';
 
 function App() {
   return (
-    <div
-      className='w-screen h-screen relative pointer-events-none'>
-      <div
-        className='absolute inset-0 z-[9999999] pointer-events-auto'>
+    <div>
+      <div>
         <HeroUIProvider>
           <WidgetContainer clientKey={'widget'} apiUrl={'http://localhost:8000'} />
           <Button
@@ -18,8 +16,6 @@ function App() {
           </Button>
         </HeroUIProvider>
       </div>
-
-
     </div>
   );
 }
