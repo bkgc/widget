@@ -288,7 +288,7 @@ export function Widget() {
   return (
     <>
       <Draggable onStop={onStop} onDrag={onDrag} nodeRef={nodeRef}>
-        <Button
+        <button
           ref={combinedRef}
           className={` p-2 text-white fixed bottom-6 right-6  rounded-full`}
           style={{
@@ -296,16 +296,15 @@ export function Widget() {
             height: widget.buttonSize + "rem",
             backgroundColor: widget.colorHeader,
           }}
-          onPress={() => {
+          onClick={() => {
             console.log("CLICK")
             openWidget()
             setIsOpen(!isOpen)
             // setIsOpen(!isOpen)
           }}
-          isIconOnly
         >
           <Message01Icon className="h-full w-full" strokeWidth={2} />
-        </Button>
+        </button>
       </Draggable>
 
       <AnimatePresence>
