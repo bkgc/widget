@@ -14,22 +14,19 @@ function onReady() {
   try {
     if (document.getElementById('my-widget-wrapper')) return;
 
+    // Wrapper ocupa solo el espacio del botón
     const wrapper = document.createElement('div');
     wrapper.id = 'my-widget-wrapper';
     wrapper.style.position = 'fixed';
-    wrapper.style.bottom = '0';
-    wrapper.style.right = '0';
-    wrapper.style.width = '100vw';
-    wrapper.style.height = '100vh';
+    wrapper.style.bottom = '2rem';
+    wrapper.style.right = '2rem';
     wrapper.style.zIndex = '9999999999';
-    wrapper.style.pointerEvents = 'none'; // no bloquear nada fuera del widget
 
     const shadow = wrapper.attachShadow({ mode: 'open' });
-    forwardEventsFromShadow(shadow);
 
     const rootDiv = document.createElement('div');
     rootDiv.id = 'widget-root';
-    rootDiv.style.pointerEvents = 'auto'; // permitir eventos dentro del widget 👈
+    rootDiv.style.pointerEvents = 'auto';
 
     shadow.appendChild(rootDiv);
     injectStyle(shadow);
@@ -43,58 +40,6 @@ function onReady() {
   } catch (error) {
     console.warn('Widget initialization failed:', error);
   }
-}
-
-function forwardEventsFromShadow(shadowRoot: ShadowRoot) {
-  const eventTypes = ['click', 'mousedown', 'mouseup', 'keydown', 'keyup'];
-
-  eventTypes.forEach(eventType => {
-    shadowRoot.addEventListener(eventType, (originalEvent) => {
-      if ((originalEvent as any)._isForwarded) return;
-
-      const eventInit = {
-        bubbles: true,
-        cancelable: originalEvent.cancelable,
-        composed: true,
-      };
-
-      let newEvent: Event;
-
-      if (originalEvent instanceof MouseEvent) {
-        newEvent = new MouseEvent(originalEvent.type, {
-          ...eventInit,
-          screenX: originalEvent.screenX,
-          screenY: originalEvent.screenY,
-          clientX: originalEvent.clientX,
-          clientY: originalEvent.clientY,
-          button: originalEvent.button,
-          buttons: originalEvent.buttons,
-          relatedTarget: originalEvent.relatedTarget,
-          ctrlKey: originalEvent.ctrlKey,
-          shiftKey: originalEvent.shiftKey,
-          altKey: originalEvent.altKey,
-          metaKey: originalEvent.metaKey,
-        });
-      } else if (originalEvent instanceof KeyboardEvent) {
-        newEvent = new KeyboardEvent(originalEvent.type, {
-          ...eventInit,
-          key: originalEvent.key,
-          code: originalEvent.code,
-          location: originalEvent.location,
-          ctrlKey: originalEvent.ctrlKey,
-          shiftKey: originalEvent.shiftKey,
-          altKey: originalEvent.altKey,
-          metaKey: originalEvent.metaKey,
-          repeat: originalEvent.repeat,
-        });
-      } else {
-        newEvent = new Event(originalEvent.type, eventInit);
-      }
-
-      (newEvent as any)._isForwarded = true;
-      originalEvent.target?.dispatchEvent(newEvent);
-    });
-  });
 }
 
 function injectStyle(shadowRoot: ShadowRoot) {
