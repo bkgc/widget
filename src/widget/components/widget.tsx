@@ -1,6 +1,5 @@
 import { useContext, useEffect, useRef, useState } from 'react';
 import { WidgetContext } from '../lib/context';
-import { Button, Card, CardBody, CardHeader, Divider, Image } from '@heroui/react';
 import { ArrowLeft01Icon, ArrowRight01Icon, Cancel01Icon, Message01Icon, SentIcon, ChipIcon, ReloadIcon } from "hugeicons-react";
 import { getFiles, sendMessageToAI } from '../../api/api';
 import { AnimatePresence, motion, wrap } from 'framer-motion';
@@ -110,7 +109,6 @@ export function Widget() {
 
   const isDraggingRef = useRef(false);
   const buttonModalRef = useRef<HTMLButtonElement | null>(null);
-  const containerRef = useRef<HTMLDivElement | null>(null);
   const nodeRef = useRef(null);
   const chatsRef = useRef<HTMLDivElement>(null)
 
@@ -140,35 +138,41 @@ export function Widget() {
     setCurrentPage(((page + newDirection) > 2 || (page + newDirection) < 0) ? 0 : page + newDirection)
   };
   const openWidget = () => {
-    if (!buttonModalRef.current || !containerRef.current) return;
+    if (!buttonModalRef.current) return;
 
     const rect = buttonModalRef.current.getBoundingClientRect();
-    const containerRect = containerRef.current.getBoundingClientRect();
 
     const widgetWidth = 480;
     const widgetHeight = 720;
     const padding = 10;
-    let left = rect.left - containerRect.left;
-    let top = rect.top - containerRect.top;
-    const containerWidth = containerRect.width;
-    const containerHeight = containerRect.height;
 
-    if (left + widgetWidth > containerWidth) {
-      left = rect.right - widgetWidth - containerRect.left;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+
+    // Posición inicial del widget basado en la posición del botón
+    let left = rect.left;
+    let top = rect.top;
+
+    // Si se sale del lado derecho
+    if (left + widgetWidth > viewportWidth) {
+      left = rect.right - widgetWidth;
     }
 
-    if (top + widgetHeight > containerHeight) {
-      top = rect.bottom - widgetHeight - containerRect.top - 75;
-    }
-    else {
-      top += 75
+    // Si se sale por abajo
+    if (top + widgetHeight > viewportHeight) {
+      top = rect.bottom - widgetHeight - 75; // Ajuste extra
+    } else {
+      top += 75; // Le sumás espacio debajo del botón
     }
 
+    // Asegurar que no se vaya fuera de la pantalla por izquierda o arriba
     if (left < padding) left = padding;
     if (top < padding) top = padding;
 
+    // Guardar la posición final
     setWidgetPosition({ top, left });
   };
+
 
   const onDrag = () => {
     isDraggingRef.current = true;
@@ -290,7 +294,7 @@ export function Widget() {
       <Draggable onStop={onStop} onDrag={onDrag} nodeRef={nodeRef}>
         <button
           ref={combinedRef}
-          className={` p-2 text-white fixed bottom-6 right-6  rounded-full`}
+          className={` p-2 text-white fixed bottom-6 right-6  rounded-full cursor-pointer z-50`}
           style={{
             width: widget.buttonSize + "rem",
             height: widget.buttonSize + "rem",
@@ -325,7 +329,7 @@ export function Widget() {
               className=' absolute top-4 left-4 bg-white p-4 w-14 h-14 rounded-full border-1 border-black z-50' >
               {IconsToSelect.find((b) => b.key === widget.mainIcon) ?
                 IconsToSelect.find((b) => b.key === widget.mainIcon)?.icon :
-                <Image
+                <img
                   src={widget.mainIcon} />}
               <div
                 className='absolute top-0 right-0 w-4 h-4 bg-green-400 rounded-full'>
@@ -337,12 +341,12 @@ export function Widget() {
                 <div className='text-white text-lg font-bold'>{widget.widgetName}</div>
                 <div className='text-white text-tiny'>Disponible ahora</div>
               </div>
-              <Button onPress={() => startRestartChat(true)} className='text-white bg-transparent hover:text-opacity-50' isIconOnly>
+              <button onClick={() => startRestartChat(true)} className='text-white bg-transparent hover:text-opacity-50' >
                 <ReloadIcon className='stroke-2' />
-              </Button>
-              <Button onPress={() => setIsOpen(false)} className='text-white bg-transparent hover:text-opacity-50' isIconOnly>
+              </button>
+              <button onClick={() => setIsOpen(false)} className='text-white bg-transparent hover:text-opacity-50' >
                 <Cancel01Icon className='stroke-2' />
-              </Button>
+              </button>
               <div
                 className='absolute right-10 -bottom-4 flex flex-row gap-2 z-50'>
                 <button
@@ -366,7 +370,7 @@ export function Widget() {
                       className='flex flex-col gap-2'
                       key={index}>
                       <div
-                        className={`w-full flex font-semibold text-gray-400 text-base ${chat?.message?.isHuman ? 'justify-end' : 'justify-start'}`}>
+                        className={`w-full flex font-semibold  text-gray-400 text-base ${chat?.message?.isHuman ? 'justify-end' : 'justify-start'}`}>
                         {chat?.message?.isHuman ? 'Tu' : widget.widgetName}
                       </div>
                       <div
@@ -408,24 +412,21 @@ export function Widget() {
                       <div
                         className="w-full flex flex-col gap-1 border-1 rounded-2xl overflow-hidden ">
                         {widget.buttons.map((button, index) =>
-                          <Button key={index}
+                          <button key={index}
                             className={`w-full flex justify-between bg-stone-100 min-h-10 text-black hover:bg-black hover:text-white ${index > 0 && "border-t"} rounded-none transition-all duration-300 ease-in-out`}
-                            startContent={
-                              <>
-                                {IconsToSelect.find((b) => b.key === widget.mainIcon) ?
-                                  IconsToSelect.find((b) => b.key === widget.mainIcon)?.icon :
-                                  <Image
-                                    src={button?.icon}
-                                    className="w-4" />}
-                              </>
-                            }
+
                             style={{ fontSize: sizeFont + "rem" }}
-                            onPress={() => addButtonAction(button.instruction)}>
+                            onClick={() => addButtonAction(button.instruction)}>
+                            {IconsToSelect.find((b) => b.key === widget.mainIcon) ?
+                              IconsToSelect.find((b) => b.key === widget.mainIcon)?.icon :
+                              <img
+                                src={button?.icon}
+                                className="w-4" />}
                             <div
                               className="w-full  text-left">
                               {button.name.substring(0, 30)}
                             </div>
-                          </Button>
+                          </button>
                         )}
                       </div>
                     </div>}
@@ -444,18 +445,18 @@ export function Widget() {
                         }}
                         className="relative m-auto px-4"
                       >
-                        <Card
+                        <div
                           className="min-h-[40rem] bg-stone-100 rounded-3xl  p-4 flex justify-center"
                           style={{ boxShadow: '0px 0px 8px 2px rgba(0,0,0,0.2)' }}>
-                          <CardHeader
+                          <div
                             className="font-bold text-center w-full justify-center py-2">
                             {chat.products[wrap(0, chat.products.length, page)].name}
-                          </CardHeader>
-                          <CardBody
+                          </div>
+                          <div
                             className="px-10 flex flex-col gap-2">
                             <div
                               className="w-full flex justify-center border-1  rounded-3xl ">
-                              <Image
+                              <img
                                 src={chat.products[wrap(0, chat.products.length, page)].imagen}
                                 className="h-56 w-56 object-cover" />
                             </div>
@@ -472,38 +473,38 @@ export function Widget() {
                             </div>
                             <div
                               className="w-full flex justify-center">
-                              <Button
+                              <button
                                 className="w-full rounded-full text-white font-bold hover:opacity-50"
                                 style={{ backgroundColor: widget.colorHeader }}>
                                 Ver producto
-                              </Button>
+                              </button>
                             </div>
                             <div
                               className="w-full flex justify-center">
-                              <Button
+                              <button
                                 className="rounded-full bg-transparent hover:bg-gray-400">
                                 Ver detalle
-                              </Button>
+                              </button>
                             </div>
-                          </CardBody>
-                        </Card>
+                          </div>
+                        </div>
                       </motion.div>
                       <div
                         className='flex flex-row justify-between w-full absolute top-1/2 z-50'>
-                        <Button
+                        <button
                           className='flex justify-center min-h-10 min-w-10 rounded-full text-white opacity-75 hover:opacity-50'
                           style={{ backgroundColor: widget.colorHeader }}
-                          isIconOnly
-                          onPress={() => paginate(-1)}>
+
+                          onClick={() => paginate(-1)}>
                           <ArrowLeft01Icon />
-                        </Button>
-                        <Button
+                        </button>
+                        <button
                           className='flex justify-center min-h-10 min-w-10 rounded-full text-white opacity-75 hover:opacity-50'
                           style={{ backgroundColor: widget.colorHeader }}
-                          isIconOnly
-                          onPress={() => paginate(1)}>
+
+                          onClick={() => paginate(1)}>
                           <ArrowRight01Icon />
-                        </Button>
+                        </button>
                       </div>
                       <div
                         className='w-full flex justify-center'>
@@ -573,7 +574,6 @@ export function Widget() {
             </div>
             {!isAgentLoading &&
               <>
-                <Divider />
                 <div
                   className='w-full flex flex-row justify-between h-16'>
                   <input
@@ -588,11 +588,8 @@ export function Widget() {
                       }
                     }}
                     value={message} />
-                  <Button
-                    isIconOnly
-                    variant="light"
-                    size="md"
-                    onPress={() => {
+                  <button
+                    onClick={() => {
                       addChat(message)
                       setMessage('')
                     }}
@@ -600,7 +597,7 @@ export function Widget() {
                     style={{ backgroundColor: widget.colorHeader }}
                   >
                     <SentIcon />
-                  </Button>
+                  </button>
                 </div>
               </>}
 
