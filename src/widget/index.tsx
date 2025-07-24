@@ -23,10 +23,11 @@ function onReady() {
     wrapper.style.width = '100vw'
     wrapper.style.height = '100vh'
     wrapper.style.pointerEvents = 'none';
+    wrapper.style.zIndex = '9999'
 
     const rootDiv = document.createElement('div');
     rootDiv.id = 'widget-root';
-    rootDiv.style.position = 'fixed'
+    rootDiv.style.position = 'relative'
     rootDiv.style.width = '100%'
     rootDiv.style.height = '100%'
 

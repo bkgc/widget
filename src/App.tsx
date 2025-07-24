@@ -9,7 +9,6 @@ function App() {
     <>
       <HeroUIProvider>
         <WidgetContainer clientKey={'widget'} apiUrl={'http://localhost:8000'} />
-
       </HeroUIProvider>
     </>
   );
