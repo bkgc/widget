@@ -1,6 +1,7 @@
 import { createRoot } from 'react-dom/client';
 import { WidgetContainer } from './components/widget-container';
 import './styles/style.css';
+import { HeroUIProvider } from '@heroui/react';
 
 function initializeWidget() {
   if (document.readyState !== 'loading') {
@@ -33,7 +34,7 @@ function onReady() {
 
     const clientKey = getClientKey();
     const apiUrl = getApiUrl();
-    const component = <WidgetContainer clientKey={clientKey} apiUrl={apiUrl} />;
+    const component = <HeroUIProvider><WidgetContainer clientKey={clientKey} apiUrl={apiUrl} /></HeroUIProvider>;
     createRoot(rootDiv).render(component);
 
     document.body.appendChild(wrapper);
@@ -45,8 +46,7 @@ function onReady() {
 function injectStyle(shadowRoot: ShadowRoot) {
   const scripts = document.getElementsByTagName('script');
   const current = scripts[scripts.length - 1];
-  const fileName = process.env.WIDGET_NAME || 'widget';
-  const cssUrl = current?.getAttribute('data-widget-css-url') || process.env.WIDGET_CSS_URL || `/${fileName}.css`;
+  const cssUrl = current?.getAttribute('data-widget-css-url') || process.env.WIDGET_CSS_URL || `widget.css`;
 
   const link = document.createElement('link');
   link.rel = 'stylesheet';
