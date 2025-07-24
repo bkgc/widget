@@ -110,6 +110,7 @@ export function Widget() {
 
   const isDraggingRef = useRef(false);
   const buttonModalRef = useRef<HTMLButtonElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const nodeRef = useRef(null);
   const chatsRef = useRef<HTMLDivElement>(null)
 
@@ -139,41 +140,35 @@ export function Widget() {
     setCurrentPage(((page + newDirection) > 2 || (page + newDirection) < 0) ? 0 : page + newDirection)
   };
   const openWidget = () => {
-    if (!buttonModalRef.current) return;
+    if (!buttonModalRef.current || !containerRef.current) return;
 
     const rect = buttonModalRef.current.getBoundingClientRect();
+    const containerRect = containerRef.current.getBoundingClientRect();
 
     const widgetWidth = 480;
     const widgetHeight = 720;
     const padding = 10;
+    let left = rect.left - containerRect.left;
+    let top = rect.top - containerRect.top;
+    const containerWidth = containerRect.width;
+    const containerHeight = containerRect.height;
 
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-
-    // Posición inicial del widget basado en la posición del botón
-    let left = rect.left;
-    let top = rect.top;
-
-    // Si se sale del lado derecho
-    if (left + widgetWidth > viewportWidth) {
-      left = rect.right - widgetWidth;
+    if (left + widgetWidth > containerWidth) {
+      left = rect.right - widgetWidth - containerRect.left;
     }
 
-    // Si se sale por abajo
-    if (top + widgetHeight > viewportHeight) {
-      top = rect.bottom - widgetHeight - 75; // Ajuste extra
-    } else {
-      top += 75; // Le sumás espacio debajo del botón
+    if (top + widgetHeight > containerHeight) {
+      top = rect.bottom - widgetHeight - containerRect.top - 75;
+    }
+    else {
+      top += 75
     }
 
-    // Asegurar que no se vaya fuera de la pantalla por izquierda o arriba
     if (left < padding) left = padding;
     if (top < padding) top = padding;
 
-    // Guardar la posición final
     setWidgetPosition({ top, left });
   };
-
 
   const onDrag = () => {
     isDraggingRef.current = true;
@@ -295,7 +290,7 @@ export function Widget() {
       <Draggable onStop={onStop} onDrag={onDrag} nodeRef={nodeRef}>
         <button
           ref={combinedRef}
-          className={` p-2 text-white fixed bottom-6 right-6  rounded-full cursor-pointer z-50`}
+          className={` p-2 text-white fixed bottom-6 right-6  rounded-full`}
           style={{
             width: widget.buttonSize + "rem",
             height: widget.buttonSize + "rem",
@@ -330,7 +325,7 @@ export function Widget() {
               className=' absolute top-4 left-4 bg-white p-4 w-14 h-14 rounded-full border-1 border-black z-50' >
               {IconsToSelect.find((b) => b.key === widget.mainIcon) ?
                 IconsToSelect.find((b) => b.key === widget.mainIcon)?.icon :
-                <img
+                <Image
                   src={widget.mainIcon} />}
               <div
                 className='absolute top-0 right-0 w-4 h-4 bg-green-400 rounded-full'>
@@ -371,7 +366,7 @@ export function Widget() {
                       className='flex flex-col gap-2'
                       key={index}>
                       <div
-                        className={`w-full flex font-semibold  text-gray-400 text-base ${chat?.message?.isHuman ? 'justify-end' : 'justify-start'}`}>
+                        className={`w-full flex font-semibold text-gray-400 text-base ${chat?.message?.isHuman ? 'justify-end' : 'justify-start'}`}>
                         {chat?.message?.isHuman ? 'Tu' : widget.widgetName}
                       </div>
                       <div
@@ -415,19 +410,11 @@ export function Widget() {
                         {widget.buttons.map((button, index) =>
                           <button key={index}
                             className={`w-full flex justify-between bg-stone-100 min-h-10 text-black hover:bg-black hover:text-white ${index > 0 && "border-t"} rounded-none transition-all duration-300 ease-in-out`}
-<<<<<<< HEAD
-=======
-
->>>>>>> e248ff25bb4ffa9927d6fd27fd54287a8c7f42d8
                             style={{ fontSize: sizeFont + "rem" }}
                             onClick={() => addButtonAction(button.instruction)}>
                             {IconsToSelect.find((b) => b.key === widget.mainIcon) ?
                               IconsToSelect.find((b) => b.key === widget.mainIcon)?.icon :
-<<<<<<< HEAD
                               <Image
-=======
-                              <img
->>>>>>> e248ff25bb4ffa9927d6fd27fd54287a8c7f42d8
                                 src={button?.icon}
                                 className="w-4" />}
                             <div
@@ -453,18 +440,18 @@ export function Widget() {
                         }}
                         className="relative m-auto px-4"
                       >
-                        <div
+                        <Card
                           className="min-h-[40rem] bg-stone-100 rounded-3xl  p-4 flex justify-center"
                           style={{ boxShadow: '0px 0px 8px 2px rgba(0,0,0,0.2)' }}>
-                          <div
+                          <CardHeader
                             className="font-bold text-center w-full justify-center py-2">
                             {chat.products[wrap(0, chat.products.length, page)].name}
-                          </div>
-                          <div
+                          </CardHeader>
+                          <CardBody
                             className="px-10 flex flex-col gap-2">
                             <div
                               className="w-full flex justify-center border-1  rounded-3xl ">
-                              <img
+                              <Image
                                 src={chat.products[wrap(0, chat.products.length, page)].imagen}
                                 className="h-56 w-56 object-cover" />
                             </div>
@@ -494,8 +481,8 @@ export function Widget() {
                                 Ver detalle
                               </button>
                             </div>
-                          </div>
-                        </div>
+                          </CardBody>
+                        </Card>
                       </motion.div>
                       <div
                         className='flex flex-row justify-between w-full absolute top-1/2 z-50'>
@@ -582,6 +569,7 @@ export function Widget() {
             </div>
             {!isAgentLoading &&
               <>
+                <Divider />
                 <div
                   className='w-full flex flex-row justify-between h-16'>
                   <input

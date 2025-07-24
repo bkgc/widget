@@ -1,5 +1,6 @@
 import { createRoot } from 'react-dom/client';
 import { WidgetContainer } from './components/widget-container';
+import { HeroUIProvider } from '@heroui/react';
 
 function initializeWidget() {
   if (document.readyState !== 'loading') {
@@ -43,7 +44,9 @@ function onReady() {
     const apiUrl = getApiUrl();
 
     const component = (
-      <WidgetContainer clientKey={clientKey} apiUrl={apiUrl} />
+      <HeroUIProvider>
+        <WidgetContainer clientKey={clientKey} apiUrl={apiUrl} />
+      </HeroUIProvider>
     );
 
     createRoot(rootDiv).render(component);
