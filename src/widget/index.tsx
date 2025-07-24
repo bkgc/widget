@@ -23,7 +23,6 @@ function onReady() {
     wrapper.style.position = 'fixed';
     wrapper.style.inset = '0';
     wrapper.style.zIndex = '999999';
-    wrapper.style.pointerEvents = 'none'; // permite hacer clic en la página
 
     const shadowRoot = wrapper.attachShadow({ mode: 'open' });
 

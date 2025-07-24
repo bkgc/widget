@@ -4,7 +4,7 @@ import { Card, CardBody, CardHeader, Divider, Image } from '@heroui/react';
 import { ArrowLeft01Icon, ArrowRight01Icon, Cancel01Icon, Message01Icon, SentIcon, ChipIcon, ReloadIcon } from "hugeicons-react";
 import { getFiles, sendMessageToAI } from '../../api/api';
 import { AnimatePresence, motion, wrap } from 'framer-motion';
-import Draggable from 'react-draggable';
+import Draggable, { DraggableData, DraggableEvent } from 'react-draggable';
 import { IconsToSelect } from '../../utils/icons';
 import { formatNumberToCurrency } from '../../functions/formaters.js';
 import DotSlider from './dot-slider.js';
@@ -110,7 +110,9 @@ export function Widget() {
 
   const isDraggingRef = useRef(false);
   const buttonModalRef = useRef<HTMLButtonElement | null>(null);
-  const containerRef = useRef<HTMLDivElement | null>(null);
+
+
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const nodeRef = useRef(null);
   const chatsRef = useRef<HTMLDivElement>(null)
 
@@ -152,8 +154,8 @@ export function Widget() {
     const viewportHeight = window.innerHeight;
 
     // Posición inicial del widget basado en la posición del botón
-    let left = rect.left;
-    let top = rect.top;
+    let left = rect.left + dragOffset.x;
+    let top = rect.top + dragOffset.y;
 
     // Si se sale del lado derecho
     if (left + widgetWidth > viewportWidth) {
@@ -180,7 +182,8 @@ export function Widget() {
     isDraggingRef.current = true;
   };
 
-  const onStop = () => {
+  const onStop = (_e: DraggableEvent, data: DraggableData) => {
+    setDragOffset({ x: data.x, y: data.y });
     isDraggingRef.current = false;
   };
   const startRestartChat = (isNew: boolean = false, data?: Config) => {
@@ -324,7 +327,8 @@ export function Widget() {
             className={`fixed w-[30rem] h-[45rem] bg-white border border-gray-200 shadow-lg z-[9999] rounded-xl flex flex-col overflow-hidden`}
             style={{
               top: widgetPosition.top,
-              left: widgetPosition.left
+              left: widgetPosition.left,
+              pointerEvents: isDraggingRef.current ? 'auto' : 'none'
             }}
           >
             <div
