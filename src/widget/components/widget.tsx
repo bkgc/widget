@@ -299,17 +299,17 @@ export function Widget() {
       <Draggable onStop={onStop} onDrag={onDrag} nodeRef={nodeRef}>
         <button
           ref={combinedRef}
-          className={` p-2 text-white fixed bottom-6 right-6  rounded-full`}
+          className={`p-2 text-white fixed bottom-6 right-6 rounded-full`}
           style={{
             width: widget.buttonSize + "rem",
             height: widget.buttonSize + "rem",
             backgroundColor: widget.colorHeader,
+            pointerEvents: 'auto'
           }}
           onClick={() => {
             console.log("CLICK")
             openWidget()
             setIsOpen(!isOpen)
-            // setIsOpen(!isOpen)
           }}
         >
           <Message01Icon className="h-full w-full" strokeWidth={2} />
@@ -328,11 +328,12 @@ export function Widget() {
             style={{
               top: widgetPosition.top,
               left: widgetPosition.left,
-              pointerEvents: 'auto'
+              pointerEvents: isDraggingRef.current ? 'all' : 'none'
             }}
           >
             <div
-              className=' absolute top-4 left-4 bg-white p-4 w-14 h-14 rounded-full border-1 border-black z-50' >
+              className=' absolute top-4 left-4 bg-white p-4 w-14 h-14 rounded-full border-1 border-black z-50'
+              style={{ pointerEvents: 'auto' }} >
               {IconsToSelect.find((b) => b.key === widget.mainIcon) ?
                 IconsToSelect.find((b) => b.key === widget.mainIcon)?.icon :
                 <Image
@@ -341,7 +342,9 @@ export function Widget() {
                 className='absolute top-0 right-0 w-4 h-4 bg-green-400 rounded-full'>
               </div>
             </div>
-            <div className="relative flex flex-row gap-2 justify-between items-center pl-20 pr-2 w-full  h-20 rounded-t-xl"
+            <div 
+              className="relative flex flex-row gap-2 justify-between items-center pl-20 pr-2 w-full h-20 rounded-t-xl"
+              style={{ backgroundColor: widget.colorHeader }}
               style={{ backgroundColor: widget.colorHeader }}>
               <div className='flex flex-col gap-0 justify-center items-start w-full'>
                 <div className='text-white text-lg font-bold'>{widget.widgetName}</div>
